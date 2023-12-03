@@ -1,0 +1,25 @@
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { title, author, isbn } = req.body;
+
+  try {
+    
+    if (!title || !author || !isbn) {
+      return res.status(400).json({ message: 'Please provide title, author, and ISBN' });
+    }
+
+    const book = await Book.findById(id);
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    book.title = title;
+    book.author = author;
+    book.isbn = isbn;
+
+    await book.save(); 
+    res.json(book);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to update book details' });
+  }
+});
